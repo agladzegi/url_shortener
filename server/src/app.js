@@ -28,12 +28,20 @@ app.get('/', (req, res) => {
   res.json({ message: 'hello 👍' });
 });
 
-app.get('/url/:id', (req, res) => {
-  // Todo: get a short url by id
-});
+app.get('/:id', async (req, res) => {
+  const { id: slug } = req.params;
 
-app.get('/:id', (req, res) => {
-  // Todo: redirect to url
+  try {
+    const url = await urls.findOne({ slug });
+
+    if (url) {
+      return res.redirect(url.url);
+    }
+
+    res.redirect(`/?error=${slug} not found`);
+  } catch (error) {
+    res.redirect(`/?error=Link not found`);
+  }
 });
 
 const schema = yup.object().shape({
@@ -66,7 +74,8 @@ app.post('/url', async (req, res, next) => {
     const created = await urls.insert(newUrl);
     res.json(created);
   } catch (error) {
-    next(error);
+    res.status(400);
+    next(new Error('ლინკი უნდა იწყებოდეს http:// ან https://'));
   }
 });
 
