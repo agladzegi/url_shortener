@@ -29,9 +29,9 @@ app.get('/:id', async (req, res, next) => {
       return res.redirect(url.url);
     }
 
-    next(new Error(`${slug} not found`));
+    res.redirect(`${process.env.CLIENT_URL}`);
   } catch (error) {
-    next(new Error('Link not found'));
+    res.redirect(`${process.env.CLIENT_URL}`);
   }
 });
 
