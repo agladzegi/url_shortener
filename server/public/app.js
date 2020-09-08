@@ -30,6 +30,7 @@ form.addEventListener('submit', async function (e) {
     const urlResult = document.createElement('input');
     urlResult.type = 'text';
     urlResult.setAttribute('id', 'urlResult');
+    urlResult.readOnly = true;
     urlResult.value = `${window.location.protocol}//${window.location.host}/${result.slug}`;
     showUrl.append(urlResult);
 
@@ -38,9 +39,14 @@ form.addEventListener('submit', async function (e) {
     resultBtn.setAttribute('id', 'resultBtn');
     resultBtn.innerHTML = `<img src="./copy.svg" alt="Copy" /> დააკოპირე`;
     resultBtn.addEventListener('click', function () {
+      window.getSelection().removeAllRanges();
+      urlResult.readOnly = false;
       urlResult.select();
       urlResult.setSelectionRange(0, 99999);
       document.execCommand('copy');
+      window.getSelection().removeAllRanges();
+      urlResult.readOnly = true;
+      resultBtn.innerHTML = `<img src="./copy.svg" alt="Copy" /> დაკოპირდა`;
     });
     showUrl.append(resultBtn);
   }

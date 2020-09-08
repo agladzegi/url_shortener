@@ -16,11 +16,7 @@ const app = express();
 
 app.use(morgan('common'));
 app.use(helmet());
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-  })
-);
+
 app.use(express.json());
 app.use(express.static('./public'));
 
