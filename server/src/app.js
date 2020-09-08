@@ -1,6 +1,6 @@
 const express = require('express');
-const cors = require('cors');
 const helmet = require('helmet');
+const cors = require('cors');
 const morgan = require('morgan');
 const yup = require('yup');
 const { nanoid } = require('nanoid');
@@ -16,15 +16,10 @@ const app = express();
 
 app.use(morgan('common'));
 app.use(helmet());
-
+app.use(cors({ origin: `${process.env.CLIENT_URL}` }));
 app.use(express.json());
-app.use(express.static('./public'));
 
-app.get('/', (req, res) => {
-  res.json({ message: 'hello 👍' });
-});
-
-app.get('/:id', async (req, res) => {
+app.get('/:id', async (req, res, next) => {
   const { id: slug } = req.params;
 
   try {
@@ -34,9 +29,9 @@ app.get('/:id', async (req, res) => {
       return res.redirect(url.url);
     }
 
-    res.redirect(`/?error=${slug} not found`);
+    next(new Error(`${slug} not found`));
   } catch (error) {
-    res.redirect(`/?error=Link not found`);
+    next(new Error('Link not found'));
   }
 });
 
